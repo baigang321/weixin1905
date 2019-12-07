@@ -24,3 +24,6 @@ Route::get('/test/adduser','User\LoginController@addUser');
 Route::get('/test/adduserdo','User\LoginController@adduserdo');
 Route::get('/test/delete/{id}','User\LoginController@destroy');
 Route::get('/test/update/{id}','User\LoginController@destroy');
+//微信开发
+Route::get('/wx','WeiXin\WxController@wechat');
+
