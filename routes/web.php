@@ -26,5 +26,6 @@ Route::get('/test/delete/{id}','User\LoginController@destroy');
 Route::get('/test/update/{id}','User\LoginController@destroy');
 //微信开发
 Route::get('/wx','WeiXin\WxController@wechat');
+Route::post('/wx','WeiXin\WxController@receiv'); //接收微信事件
 
 
