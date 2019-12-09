@@ -27,3 +27,4 @@ Route::get('/test/update/{id}','User\LoginController@destroy');
 //微信开发
 Route::get('/wx','WeiXin\WxController@wechat');
 
+
