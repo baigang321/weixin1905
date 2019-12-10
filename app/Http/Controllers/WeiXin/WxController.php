@@ -16,7 +16,7 @@ class WxController extends Controller
         $url='https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&'.env("WX_APPID").'=&secret='.env("WX_APPSECRET");
         $data_json=file_get_contents($url);
         $arr=json_decode($data_json,true);
-        return $arr=['access_token'];
+        return $arr['access_token'];
     }
     //处理接入
     public function wechat()
