@@ -54,8 +54,24 @@ class WxController extends Controller
             $user_info=file_get_contents($url);
             file_put_contents("wx_user.log",$user_info,FILE_APPEND);
         }
+        //判断消息类型
+        $msg_type = $xml_obj->MsgType;
+        $touser = $xml_obj->FromUserName;           //接收消息得到用户openid
+        $formuser = $xml_obj->ToUserName;           //自己开发的公众号的id
+        $time = time();
+        if($msg_type=='text'){
+            $content = date('Y-m-d H:i:s').$xml_obj->Content;
+            $response_text = '<xml>
+                <ToUserName><![CDATA['.$touser.']]></ToUserName>
+                <FromUserName><![CDATA['.$formuser.']]></FromUserName>
+                <CreateTime>'.$time.'</CreateTime>
+                <MsgType><![CDATA[text]]></MsgType>
+                <Content><![CDATA['.$content.']]></Content>
+                </xml>
+                ';
+            echo $response_text;        //回复用户消息
+        }
     }
-
     //获取用户基本信息
     public  function  getUserInfo($access_token,$openid){
      $url='https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
