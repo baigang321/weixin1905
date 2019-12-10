@@ -31,7 +31,7 @@ class WxController extends Controller
         $tmpStr = implode($tmpArr);
         $tmpStr = sha1($tmpStr);
         if ($tmpStr == $signature) {        //验证通过
-            echo $echostr;
+            print_r($echostr);
         } else {
             die("not ok");
         }
@@ -44,9 +44,7 @@ class WxController extends Controller
         $data=date("Y-m-d H:i:s").$xml_str;
         file_put_contents($log_file,$data,FILE_APPEND);
         //处理xml数据
-
         $xml_obj=simplexml_load_string($xml_str);
-
         $event=$xml_obj->Event; //类型
         if($event=='subscribe'){
             $openid=$xml_obj->FromUserName;    //获取用户的openid
