@@ -18,6 +18,7 @@ class WxController extends Controller
         $data_json=file_get_contents($url);
         $arr=json_decode($data_json,true);
         return $arr['access_token'];
+
     }
     //处理接入
     public function wechat()
