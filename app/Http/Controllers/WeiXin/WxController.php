@@ -54,15 +54,14 @@ class WxController extends Controller
             $u =WxUserModel::where(["openid"=>$openid])->first();
             if($u){
                 $msg = '欢迎回来';
-                $xml = '<xml>
-                      <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                $xml = '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
                       <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
                       <CreateTime>'.time().'</CreateTime>
                       <MsgType><![CDATA[text]]></MsgType>
                       <Content><![CDATA['.$msg.']]></Content>
                 </xml>';
                 echo $xml;
-            }else {
+            }else{
                 $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $this->access_token . '&openid=' . $openid . '&lang=zh_CN';
                 $user_info = file_get_contents($url);
                 $u = json_decode($user_info, true);
@@ -76,13 +75,11 @@ class WxController extends Controller
                 $uid = WxUserModel::insertGetId($user_data);
                 $msg = "谢谢关注";
                 //回复用户关注
-                $xml = '<xml>
-                          <ToUserName><![CDATA[' . $openid . ']]></ToUserName>
-                          <FromUserName><![CDATA[' . $xml_obj->ToUserName . ']]></FromUserName>
-                          <CreateTime>' . time() . '</CreateTime>
+                $xml = '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+                          <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
+                          <CreateTime>'.time().'</CreateTime>
                           <MsgType><![CDATA[text]]></MsgType>
-                          <Content><![CDATA[' . $msg . ']]></Content>
-                        </xml>';
+                          <Content><![CDATA['.$msg .']]></Content></xml>';
                 echo $xml;
             }
         }
