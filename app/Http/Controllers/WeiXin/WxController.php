@@ -62,10 +62,10 @@ class WxController extends Controller
                 </xml>';
                 echo $xml;
             }else{
-                $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $this->access_token . '&openid=' . $openid . '&lang=zh_CN';
+                $url='https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->access_token.'&openid='.$openid.'&lang=zh_CN';
                 $user_info = file_get_contents($url);
-                $u = json_decode($user_info, true);
-                $user_data = [
+                $u = json_decode($user_info,true);
+                $user_data =[
                     'openid' => $openid,
                     'nickname' => $u['nickname'],
                     'sex' => $u['sex'],
@@ -101,7 +101,6 @@ class WxController extends Controller
             echo $response_text;        //回复用户消息
         }
     }
-
     //获取用户基本信息
     public  function  getUserInfo($access_token,$openid){
      $url='https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
