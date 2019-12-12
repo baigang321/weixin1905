@@ -49,19 +49,25 @@ class WxController extends Controller
         //处理xml数据
         $xml_obj=simplexml_load_string($xml_str);
         $event=$xml_obj->Event; //类型
+
+        $access_token=$this->GetAccessToken();
+        //调用微信用户信息
+        $yonghu=$this->getUserInfo($access_token,$xml_obj->FromUserName);
+        //转换用户信息
+        $userInfo=json_decode($yonghu,true);
+
         if($event=='subscribe'){
             $openid=$xml_obj->FromUserName;    //获取用户的openid
             $u =WxUserModel::where(["openid"=>$openid])->first();
             if($u){
-                die("欢迎回来");
+                $content = "您好 ".$userInfo['nickname']." 现在北京时间".date('Y-m-d H:i:s') . "   " . "欢迎回来";
             }else{
                 $user_data=[
                     'openid'=>$openid,
                     'sub_time'=>$xml_obj->CreateTime,
                 ];
                 $uid=WxUserModel::insertGetId($user_data);
-                var_dump($uid);
-                die;
+                $content ="您好 ".$userInfo['nickname']." 现在北京时间".date('Y-m-d H:i:s') . "   " . "欢迎关注";
             }
 
             $url='https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->access_token.'&openid='.$openid.'&lang=zh_CN';
