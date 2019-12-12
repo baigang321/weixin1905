@@ -53,20 +53,38 @@ class WxController extends Controller
             $openid=$xml_obj->FromUserName;    //获取用户的openid
             $u =WxUserModel::where(["openid"=>$openid])->first();
             if($u){
-                die("欢迎回来");
-            }else{
-                $user_data=[
-                    'openid'=>$openid,
-                    'sub_time'=>$xml_obj->CreateTime,
+                $msg = '欢迎回来';
+                $xml = '<xml>
+                      <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                      <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
+                      <CreateTime>'.time().'</CreateTime>
+                      <MsgType><![CDATA[text]]></MsgType>
+                      <Content><![CDATA['.$msg.']]></Content>
+                </xml>';
+                echo $xml;
+            }else {
+                $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $this->access_token . '&openid=' . $openid . '&lang=zh_CN';
+                $user_info = file_get_contents($url);
+                $u = json_decode($user_info, true);
+                $user_data = [
+                    'openid' => $openid,
+                    'nickname' => $u['nickname'],
+                    'sex' => $u['sex'],
+                    'headimgurl' => $u['headimgurl'],
+                    'subscribe_time' => $u['subscribe_time']
                 ];
-                $uid=WxUserModel::insertGetId($user_data);
-                var_dump($uid);
-                die;
+                $uid = WxUserModel::insertGetId($user_data);
+                $msg = "谢谢关注";
+                //回复用户关注
+                $xml = '<xml>
+                          <ToUserName><![CDATA[' . $openid . ']]></ToUserName>
+                          <FromUserName><![CDATA[' . $xml_obj->ToUserName . ']]></FromUserName>
+                          <CreateTime>' . time() . '</CreateTime>
+                          <MsgType><![CDATA[text]]></MsgType>
+                          <Content><![CDATA[' . $msg . ']]></Content>
+                        </xml>';
+                echo $xml;
             }
-
-            $url='https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->access_token.'&openid='.$openid.'&lang=zh_CN';
-            $user_info=file_get_contents($url);
-            file_put_contents("wx_user.log",$user_info,FILE_APPEND);
         }
         //判断消息类型
         $msg_type = $xml_obj->MsgType;
