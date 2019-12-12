@@ -49,18 +49,23 @@ class WxController extends Controller
         //处理xml数据
         $xml_obj=simplexml_load_string($xml_str);
         $event=$xml_obj->Event; //类型
+        $access_token=$this->GetAccessToken();
+        //调用微信用户信息
+        $yonghu=$this->getUserInfo($access_token,$xml_obj->FromUserName);
+        //转换用户信息
+        $userInfo=json_decode($yonghu,true);
         if($event=='subscribe'){
             $openid=$xml_obj->FromUserName;    //获取用户的openid
             $u =WxUserModel::where(["openid"=>$openid])->first();
             if($u){
-                die("欢迎回来");
+                $this->huifu($xml_obj,3,$userInfo['nickname']);
             }else{
                 $user_data=[
                     'openid'=>$openid,
                     'sub_time'=>$xml_obj->CreateTime,
                 ];
                 $uid=WxUserModel::insertGetId($user_data);
-                var_dump($uid);
+                $this->huifu($xml_obj,2,$userInfo['nickname']);
                 die;
             }
 
@@ -94,5 +99,28 @@ class WxController extends Controller
         $json_str=file_get_contents($url);
         $log_file='wx_user.log';
         file_put_contents($log_file,$json_str,FILE_APPEND);
+    }
+    //给用户发送消息
+    public  function  huifu($xml_obj,$code,$nickname){
+        $time = time();
+        $touser = $xml_obj->FromUserName;  //接受用户的oppenid
+        $fromuser = $xml_obj->ToUserName;   //开发者公众号的id
+
+        if($code==1){
+            $content = "您好 ".$nickname . " 现在北京时间".date('Y-m-d H:i:s') . "   " . $xml_obj->Content;
+        }elseif($code==2){
+            $content ="您好 ". $nickname ." 现在北京时间".date('Y-m-d H:i:s') . "   " . "欢迎关注";
+        }elseif($code==3){
+            $content = "您好 ". $nickname ." 现在北京时间".date('Y-m-d H:i:s') . "   " . "欢迎回来";
+        }
+
+            $response_text = '<xml>
+                  <ToUserName><![CDATA[' . $touser . ']]></ToUserName>
+                  <FromUserName><![CDATA[' . $fromuser . ']]></FromUserName>
+                  <CreateTime>' . $time . '</CreateTime>
+                  <MsgType><![CDATA[text]]></MsgType>
+                  <Content><![CDATA[' . $content . ']]></Content>
+                </xml>';
+                        echo $response_text;            // 回复用户消息
     }
 }
