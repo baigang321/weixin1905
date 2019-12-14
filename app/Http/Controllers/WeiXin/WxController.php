@@ -5,6 +5,9 @@ namespace App\Http\Controllers\WeiXin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\WxUserModel;
+use Illuminate\Support\Facades\Redis;
+//use Facade\FlareClient\Http\Client;
+use GuzzleHttp\Client;
 class WxController extends Controller
 {
     protected $access_token;
@@ -13,11 +16,20 @@ class WxController extends Controller
        //获取access_token
         $this->access_token=$this->getAccessToken();
     }
-    public  function  getAccessToken(){
+    public  function  test(){
+        echo $this->access_token;
+    }
+    protected   function  getAccessToken(){
+        $key="wx_access_token";
+        $access_token=Redis::get($key);
+        if($access_token){
+            return $access_token;
+        }
         $url='https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.env("WX_APPID").'&secret='.env("WX_APPSECRET");
-        file_put_contents("aaaa.log",$url,FILE_APPEND);
         $data_json=file_get_contents($url);
         $arr=json_decode($data_json,true);
+        Redis::set($key,$arr['access_token']);
+        Redis::expire($key,3600);
         return $arr['access_token'];
 
     }
@@ -51,6 +63,7 @@ class WxController extends Controller
         $event=$xml_obj->Event; //类型
         if($event=='subscribe'){
             $openid=$xml_obj->FromUserName;    //获取用户的openid
+
             $u =WxUserModel::where(["openid"=>$openid])->first();
             if($u){
                 $msg = '欢迎回来';
@@ -88,6 +101,7 @@ class WxController extends Controller
         $touser = $xml_obj->FromUserName;           //接收消息得到用户openid
         $formuser = $xml_obj->ToUserName;           //自己开发的公众号的id
         $time = time();
+        $media_id = $xml_obj->MediaId;
         if($msg_type=='text'){
             $content = date('Y-m-d H:i:s').$xml_obj->Content;
             $response_text = '<xml>
@@ -96,9 +110,56 @@ class WxController extends Controller
                 <CreateTime>'.$time.'</CreateTime>
                 <MsgType><![CDATA[text]]></MsgType>
                 <Content><![CDATA['.$content.']]></Content>
-                </xml>
-                ';
-            echo $response_text;        //回复用户消息
+                </xml>';
+                  echo $response_text;        //回复用户消息
+                    //消息入库
+            }elseif($msg_type=='image'){ //图片消息
+                //下载文件
+                $this->getMedia2($media_id,$msg_type);
+                //回复图片
+            $response = '<xml>
+                      <ToUserName><![CDATA['.$touser.']]></ToUserName>
+                      <FromUserName><![CDATA['.$formuser.']]></FromUserName>
+                      <CreateTime>'.time().'</CreateTime>
+                      <MsgType><![CDATA[image]]></MsgType>
+                      <Image>
+                        <MediaId><![CDATA['.$media_id.']]></MediaId>
+                      </Image>
+                    </xml>';
+              echo $response;
+
+            }elseif($msg_type=='voice'){ //语言消息
+
+                //下载语音
+                $this->getMedia2($media_id,$msg_type);
+
+                //回复语音
+            $response = '<xml>
+                      <ToUserName><![CDATA['.$touser.']]></ToUserName>
+                      <FromUserName><![CDATA['.$formuser.']]></FromUserName>
+                      <CreateTime>'.time().'</CreateTime>
+                      <MsgType><![CDATA[voice]]></MsgType>
+                      <Voice>
+                        <MediaId><![CDATA['.$media_id.']]></MediaId>
+                      </Voice>
+                    </xml>';
+            echo $response;
+        }elseif($msg_type=='video'){
+            // 下载小视频
+            $this->getMedia2($media_id,$msg_type);
+            // 回复
+            $response = '<xml>
+              <ToUserName><![CDATA['.$touser.']]></ToUserName>
+              <FromUserName><![CDATA['.$formuser.']]></FromUserName>
+              <CreateTime>'.time().'</CreateTime>
+              <MsgType><![CDATA[video]]></MsgType>
+              <Video>
+                <MediaId><![CDATA['.$media_id.']]></MediaId>
+                <Title><![CDATA[测试]]></Title>
+                <Description><![CDATA[不可描述]]></Description>
+              </Video>
+            </xml>';
+            echo $response;
         }
     }
     //获取用户基本信息
@@ -108,5 +169,51 @@ class WxController extends Controller
         $json_str=file_get_contents($url);
         $log_file='wx_user.log';
         file_put_contents($log_file,$json_str,FILE_APPEND);
+    }
+        public function getMedia(){
+        $media_id='9X_DpNTKScInJJ2szHwGgKBaUsrv2WAO_mTIvjlWMOqIonk79gTJKH_tgvIXI6Gk';
+        $url='https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$this->access_token.'&media_id='.$media_id;
+        $data=file_get_contents($url);
+            $file_name = date('YmdHis').mt_rand(11111,99999).'.amr';
+            file_put_contents($file_name,$data);
+            echo "下载素材成功";echo '</br>';
+            echo "文件名： ". $file_name;
+        }
+    protected function getMedia2($media_id,$media_type)
+    {
+        $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$this->access_token.'&media_id='.$media_id;
+
+        //获取素材内容
+        $client = new Client();
+//        echo 1;die;
+        $response = $client->request('GET',$url);
+        //获取文件扩展名
+//        var_dump($response);die;
+        $f = $response->getHeader('Content-disposition')[0];
+//        dd($f);
+        $extension = substr(trim($f,'"'),strpos($f,'.'));
+        //获取文件内容
+        $file_content = $response->getBody();
+        // 保存文件
+        $save_path = 'wx_media/';
+        if($media_type=='image'){       //保存图片文件
+            $file_name = date('YmdHis').mt_rand(11111,99999).$extension;
+            $save_path = $save_path.'imgs/'.$file_name;
+        }elseif($media_type=='voice'){  //保存语音文件
+            $file_name = date('YmdHis').mt_rand(11111,99999).$extension;
+            $save_path = $save_path.'voice/'.$file_name;
+        }elseif($media_type=='video')
+        {
+            $file_name = date('YmdHis').mt_rand(11111,99999).$extension;
+            $save_path = $save_path.'video/'.$file_name;
+        }
+
+        file_put_contents($save_path,$file_content);
+    }
+    public function flushAccessToken()
+    {
+        $key ='wx_access_token';
+        Redis::del($key);
+        echo $this->getAccessToken();
     }
 }
