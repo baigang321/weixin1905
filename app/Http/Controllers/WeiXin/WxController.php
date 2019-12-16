@@ -148,19 +148,18 @@ class WxController extends Controller
             // 下载小视频
             $this->getMedia2($media_id,$msg_type);
             // 回复
-            $response = '<xml>
-              <ToUserName><![CDATA['.$touser.']]></ToUserName>
-              <FromUserName><![CDATA['.$formuser.']]></FromUserName>
-              <CreateTime>'.time().'</CreateTime>
-              <MsgType><![CDATA[video]]></MsgType>
-              <Video>
+            $response = '<xml><ToUserName><![CDATA['.$touser.']]></ToUserName>
+                <FromUserName><![CDATA['.$formuser.']]></FromUserName>
+                <CreateTime>'.time().'</CreateTime>
+                <MsgType><![CDATA[video]]></MsgType>
                 <MediaId><![CDATA['.$media_id.']]></MediaId>
-                <Title><![CDATA[测试]]></Title>
-                <Description><![CDATA[不可描述]]></Description>
-              </Video>
-            </xml>';
+                <ThumbMediaId><![CDATA[_Zv6fn1sysyO8C8L7kmHz29e0dmkElgk1KSAFeu5HxKPlW5hP6dSKMlqRbmfe4lR]]></ThumbMediaId>
+                <MsgId>22567372236573458</MsgId>
+                </xml>';
             echo $response;
         }
+
+
     }
     //获取用户基本信息
     public  function  getUserInfo($access_token,$openid){
