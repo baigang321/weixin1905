@@ -31,3 +31,4 @@ Route::get('/wx','WeiXin\WxController@wechat');
 Route::post('/wx','WeiXin\WxController@receiv'); //接收微信事件
 Route::get("/wx/media",'WeiXin\WxController@getMedia');
 Route::get('/wx/flush/access_token','WeiXin\WxController@flushAccessToken');
+Route::get('/wx/menu','WeiXin\WxController@createMenu');        //创建菜单
