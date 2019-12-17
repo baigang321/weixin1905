@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\WeiXin;
 
 use App\Http\Controllers\Controller;
+use App\Model\MsgModel;
 use Illuminate\Http\Request;
 use App\Model\WxUserModel;
 use Illuminate\Support\Facades\Redis;
@@ -55,6 +56,7 @@ class WxController extends Controller
     public  function  receiv(){
         $log_file="wx.log";
         $xml_str=file_get_contents("php://input");
+
         //将接收的"数据记录到日志文件
         $data=date("Y-m-d H:i:s").$xml_str;
         file_put_contents($log_file,$data,FILE_APPEND);
@@ -104,6 +106,7 @@ class WxController extends Controller
         $media_id = $xml_obj->MediaId;
         if($msg_type=='text'){
             $content = date('Y-m-d H:i:s').$xml_obj->Content;
+            $contents =$xml_obj->Content;
             $response_text = '<xml>
                 <ToUserName><![CDATA['.$touser.']]></ToUserName>
                 <FromUserName><![CDATA['.$formuser.']]></FromUserName>
@@ -113,6 +116,11 @@ class WxController extends Controller
                 </xml>';
                   echo $response_text;        //回复用户消息
                     //消息入库
+            $xiaoxi =[
+                'openid' => $touser,
+                'message' => $contents,
+            ];
+            $res = MsgModel::insertGetId($xiaoxi);
             }elseif($msg_type=='image'){ //图片消息
                 //下载文件
                 $this->getMedia2($media_id,$msg_type);
@@ -127,7 +135,11 @@ class WxController extends Controller
                       </Image>
                     </xml>';
               echo $response;
-
+//            $xiaoxi =[
+//                'openid' => $touser,
+//                'message' => $image,
+//            ];
+//            $res = MsgModel::insertGetId($xiaoxi);
             }elseif($msg_type=='voice'){ //语言消息
 
                 //下载语音
