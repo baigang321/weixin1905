@@ -102,7 +102,7 @@ class WxController extends Controller
             //如果是 获取天气
             if($xml_obj->EventKey=='weather'){
                 $response_xml = '<xml>
-                  <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                  <ToUserName><![CDATA[".$openid."]]></ToUserName>
                   <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
                   <CreateTime>'.time().'</CreateTime>
                   <MsgType><![CDATA[text]]></MsgType>
