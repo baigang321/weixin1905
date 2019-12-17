@@ -64,9 +64,8 @@ class WxController extends Controller
         $xml_obj=simplexml_load_string($xml_str);
      //   var_dump($xml_str);die;
         $event=$xml_obj->Event; //类型
+        $openid=$xml_obj->FromUserName;    //获取用户的openid
         if($event=='subscribe'){
-            $openid=$xml_obj->FromUserName;    //获取用户的openid
-
             $u =WxUserModel::where(["openid"=>$openid])->first();
             if($u){
                 $msg = '欢迎回来';
@@ -102,7 +101,7 @@ class WxController extends Controller
             //如果是 获取天气
             if($xml_obj->EventKey=='weather'){
                 $response_xml = '<xml>
-                  <ToUserName><![CDATA[".$openid."]]></ToUserName>
+                  <ToUserName><![CDATA['.$openid.']]></ToUserName>
                   <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
                   <CreateTime>'.time().'</CreateTime>
                   <MsgType><![CDATA[text]]></MsgType>
