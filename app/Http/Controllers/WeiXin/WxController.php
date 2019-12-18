@@ -239,7 +239,6 @@ class WxController extends Controller
             $file_name = date('YmdHis').mt_rand(11111,99999).$extension;
             $save_path = $save_path.'video/'.$file_name;
         }
-
         file_put_contents($save_path,$file_content);
     }
     public function flushAccessToken()
