@@ -12,7 +12,6 @@ class VoteController extends Controller
         $code = $_GET['code'];
         //获取access_token
         $data = $this->getAccessToken($code);
-        var_dump($data);die;
         //获取用户信息
         $user_info = $this->getUserInfo($data['access_token'],$data['openid']);
         // 处理业务逻辑
@@ -53,9 +52,9 @@ class VoteController extends Controller
         $json_data = file_get_contents($url);
         $data = json_decode($json_data,true);
         if(isset($data['errcode'])){
+            // TODO  错误处理
             die("出错了 40001");       // 40001 标识获取用户信息失败
         }
         return $data;           // 返回用户信息
     }
 }
-
