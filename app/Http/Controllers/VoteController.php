@@ -38,7 +38,7 @@ class VoteController extends Controller
 //        dd($url);die;
         $json_data = file_get_contents($url);
 
-        return $data = json_decode($json_data,true);
+        return json_decode($json_data,true);
     }
     /**
      * 获取用户基本信息
