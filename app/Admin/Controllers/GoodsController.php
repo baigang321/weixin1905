@@ -64,11 +64,10 @@ class GoodsController extends AdminController
     protected function form()
     {
         $form = new Form(new GoodsModel);
-
         $form->text('goods_name', __('Goods name'));
         $form->image('img', __('Img'));
         $form->number('price', __('Price'));
-
+        $form->ckeditor('desc');
         return $form;
     }
 }
