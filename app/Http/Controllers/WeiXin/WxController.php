@@ -282,4 +282,31 @@ class WxController extends Controller
         echo '<pre>';print_r($menu);echo '</pre>';
         echo $response->getBody();      //接收 微信接口的响应数据
     }
+    public  function  sendMsg(){
+        //获取天气
+        $weather_api='https://free-api.heweather.net/s6/weather/now?location=beijing&key=6a12ef5492144cbd8795e92cfb507212';
+        $weather_info = file_get_contents($weather_api);
+        $weather_info_arr = json_decode($weather_info,true);
+        $cond_txt = $weather_info_arr['HeWeather6'][0]['now']['cond_txt'];
+        $tmp = $weather_info_arr['HeWeather6'][0]['now']['tmp'];
+        $wind_dir = $weather_info_arr['HeWeather6'][0]['now']['wind_dir'];
+        $msg = $cond_txt . ' 温度： '.$tmp . ' 风向： '. $wind_dir;
+        echo $msg;echo "\n";
+
+        $openid_arr=WxUserModel::select('openid',"nickname","sex")->get()->toArray();
+//        print_r($openid_arr);
+        $openid=array_column($openid_arr,'openid');
+//        print_r($openid);
+        $url='https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=28_lO70rL2ufkU_qSLYyFi_WQEnKx2qoiVEF7TRJXy8uGJRFfJdsnVgUnDIiHBAZ110jdOf_aUzx3kfcS7GWdBwpRBz5t-H4vER8ZQq4yroyCzRYFY3ddZsZAwKkw9VLUdm-cNMM-1H2nZhVyYZKIAcAGAVTL';
+        $msg=date("Y-m-d H:i:s")." bai".$msg;
+        $data=[
+            'touser'=>$openid,
+            'msgtype'=>"text",
+            'text'=>['content'=>$msg]
+        ];
+        $client=new Client;
+        $request=$client->request('POST',$url,['body'=>json_encode($data,JSON_UNESCAPED_UNICODE)
+        ]);
+        echo $request->getBody();echo "\n";
+    }
 }
