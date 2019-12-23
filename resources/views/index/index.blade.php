@@ -611,6 +611,7 @@
 <!-- end footer -->
 
 <!-- scripts -->
+<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/materialize.min.js"></script>
 <script src="js/owl.carousel.min.js"></script>
