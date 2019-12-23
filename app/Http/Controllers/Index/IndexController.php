@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Index;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\WxUserModel;
+use Illuminate\Support\Str;
 class IndexController extends Controller
 {
     public  function  index(){
@@ -19,6 +20,7 @@ class IndexController extends Controller
             $user_info = $this->getUserInfo($data['access_token'],$data['openid']);
             WxUserModel::insertGetId($user_info);
         }
+        //微信配置
 
         //微信配置
         $nonceStr = Str::random(8);
