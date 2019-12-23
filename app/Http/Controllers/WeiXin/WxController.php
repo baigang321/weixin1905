@@ -297,8 +297,8 @@ class WxController extends Controller
 //        print_r($openid_arr);
         $openid=array_column($openid_arr,'openid');
 //        print_r($openid);
-        $url='https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=28_lO70rL2ufkU_qSLYyFi_WQEnKx2qoiVEF7TRJXy8uGJRFfJdsnVgUnDIiHBAZ110jdOf_aUzx3kfcS7GWdBwpRBz5t-H4vER8ZQq4yroyCzRYFY3ddZsZAwKkw9VLUdm-cNMM-1H2nZhVyYZKIAcAGAVTL';
-        $msg=date("Y-m-d H:i:s")." bai".$msg;
+        $url='https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=28_F2LDWMj-sBInIpOdtNFp_BInyB-ORUKNf37McAg-V-t0aHM1yiyBdTE2nq19U3jT70vUYzVON68NTMlay8z4nYhE5aKpgmAw1KNSh5xfUnPd13tfUk6PQUPWXLb0Fd0Xwe9zvgYBciqe3L8JXJCgAHADPI';
+        $msg=date("Y-m-d H:i:s")." 最后的轻语".$msg;
         $data=[
             'touser'=>$openid,
             'msgtype'=>"text",
