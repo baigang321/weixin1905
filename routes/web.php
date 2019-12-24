@@ -35,6 +35,7 @@ Route::get("/wx/media",'WeiXin\WxController@getMedia');
 Route::get('/wx/flush/access_token','WeiXin\WxController@flushAccessToken');
 Route::get('/wx/menu','WeiXin\WxController@createMenu');        //创建菜单
 Route::get("/wx/qrcode",'WeiXin\WxQRController@qrcode');//二维码
+Route::get('/wx/newyear','WeiXin\WxController@newYear');        //元旦活动页面
 //微信公众号
 Route::get('/vote','VoteController@index');        //微信投票
 Route::get("/goods/detail","Goods\IndexController@detail");
