@@ -69,7 +69,7 @@ class WxController extends Controller
         if($event=='subscribe'){
             $u =WxUserModel::where(["openid"=>$openid])->first();
             if($u){
-                $msg = '欢迎进入选课系统';
+                $msg = '欢迎进入选课程';
                 $xml = '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
                       <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
                       <CreateTime>'.time().'</CreateTime>
@@ -264,18 +264,13 @@ class WxController extends Controller
                     'key'   => 'weather'
                 ],
                 [
-                    'type'  => 'click',
-                    'name'  => '查看课程',
-                    'key'   => 'weather'
-                ],
-                [
                     'type'  => 'view',
-                    'name'  => '课程管理',
+                    'name'  => '查看课程',
                     'url'   => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcdf7b27e5b700e3e&redirect_uri='.$redirect_uri.'&response_type=code&scope=snsapi_userinfo#wechat_redirect',
                 ],
                 [
                     'type'  => 'view',
-                    'name'  => '商城',
+                    'name'  => '课程管理',
                     'url'   => 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxcdf7b27e5b700e3e&redirect_uri='.$redirect_uri2.'&response_type=code&scope=snsapi_userinfo#wechat_redirect',
                 ],
             ]
