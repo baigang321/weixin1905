@@ -69,7 +69,7 @@ class WxController extends Controller
         if($event=='subscribe'){
             $u =WxUserModel::where(["openid"=>$openid])->first();
             if($u){
-                $msg = '欢迎回来';
+                $msg = '欢迎进入选课系统';
                 $xml = '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
                       <FromUserName><![CDATA['.$xml_obj->ToUserName.']]></FromUserName>
                       <CreateTime>'.time().'</CreateTime>
