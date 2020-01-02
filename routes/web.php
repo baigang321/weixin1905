@@ -40,3 +40,10 @@ Route::get('/wx/newyear','WeiXin\WxController@newYear');        //元旦活动�
 Route::get('/vote','VoteController@index');        //微信投票
 Route::get("/goods/detail","Goods\IndexController@detail");
 Route::get("/wx/sendMsg","WeiXin\WxController@sendMsg");
+
+
+Route::get('/test/pay','TestController@alipay');        //去支付
+
+Route::get('/test/alipay/return','Alipay\PayController@aliReturn');
+
+Route::post('/test/alipay/notify','Alipay\PayController@notify');
