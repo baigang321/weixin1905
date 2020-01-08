@@ -11,10 +11,10 @@
 |
 */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
-Route::get('/','Index\IndexController@index');
+Route::get('/', function () {
+   return view('welcome');
+});
+//Route::get('/','Index\IndexController@index');
 Route::get('/info',function(){
     phpinfo();
 });
@@ -55,3 +55,9 @@ Route::post('/api/user/login','Api\TestController@login');     //用户登录
 Route::get('/api/user/list','Api\TestController@userList'); //用户列表
 
      
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/test/redis1','TestController@redis1');        //去支付
+Route::get('/sign1','TestController@sign1');  
+

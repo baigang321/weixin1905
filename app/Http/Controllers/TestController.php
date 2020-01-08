@@ -109,11 +109,31 @@ class TestController extends Controller
         //echo $url;die;
 
         header("Location:".$url);
-
-
-
     }
 
-
-
+    public function redis1(){
+        $priv_key=file_get_contents(storage_path("keys/priv.key"));   
+        $data="hello worldss";
+        echo "待加密数据:" .$data;echo "</br>";
+        openssl_private_encrypt($data, $enc_data, $priv_key);
+        echo $enc_data;
+        echo "</br>";
+        $base64_encode_str=base64_encode($enc_data);
+        echo $base64_encode_str;
+        echo "</br>";
+    }
+    //签名测试
+    public function sign1(){
+        $params=[
+            'username'=>'zhnagsna',
+            'email'=>'zhnagsna@qq.com',
+            'amount'=>5000,
+            'data'=>time()
+        ];
+        echo '<pre>';print_r($params);echo '</pre>';
+        //将参数字典排序
+        ksort($params);
+        //拼接字符串
+        echo '<pre>';print_r($params);echo '</pre>'; 
+    }
 }
