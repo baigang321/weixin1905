@@ -123,6 +123,7 @@ class TestController extends Controller
         echo "</br>";
     }
     //签名测试
+      //签名测试
     public function sign1(){
         $params=[
             'username'=>'zhnagsna',
@@ -133,7 +134,60 @@ class TestController extends Controller
         echo '<pre>';print_r($params);echo '</pre>';
         //将参数字典排序
         ksort($params);
+         echo '<pre>';print_r($params);echo '</pre>'; 
+        //拼接待签名的字符串
+        $str="";
+        foreach ($params as $k => $v) {
+           $str.=$k.'='.$v.'&';
+        }
         //拼接字符串
-        echo '<pre>';print_r($params);echo '</pre>'; 
+        $str=rtrim($str,'&');
+        echo $str;echo '<hr>';
+        //使用 私钥进行签名
+        $priv_key=file_get_contents(storage_path('keys/priv.key'));
+        openssl_sign($str,$signature,$priv_key,OPENSSL_ALGO_SHA256);
+        // echo openssl_error_string();die;
+        var_dump($signature);
+        echo "</br>";
+
+        // //验证签名
+        // $pub_key=file_get_contents(storage_path('keys/pub.key'));
+        // $status=  openssl_sign($str,$signature,$pub_key,OPENSSL_ALGO_SHA256);
+        // var_dump($status);
+
+
+        //64编码签名
+        $sign=base64_encode($signature);
+        echo '<hr>';
+        echo "签名: ".$sign; echo '<hr>';
+        $url="http://weixin.1905.com/sign1?".$str.'&sign='.urlencode($sign);
+
+        echo $url;
+    }
+    public function sign2(){
+        $sign_token='abcdefg';
+        $params=[
+            'order_id'=>mt_rand(111111,999999),
+            'amount'=>9999,
+            'uid'=>100,
+            'time'=>time()
+        ];
+        ksort($params);
+         $str="";
+        foreach ($params as $k => $v) {
+           $str.=$k.'='.$v.'&';
+        }
+        //拼接字符串
+        $str=rtrim($str,'&');
+        echo $str;echo '<hr>';
+        //计算签名
+        $tmp_str=$str.$sign_token;
+        echo '</br>';
+        echo $tmp_str;echo '</br>';
+        $sign=md5($tmp_str);
+        echo '签名结果: '.$sign;
+        echo '</br>';
+        $url="http://weixin.1905.com/test?".$str.'&sign='.$sign;
+        echo $url;echo '</br>';
     }
 }

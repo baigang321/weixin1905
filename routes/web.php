@@ -59,5 +59,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/test/redis1','TestController@redis1');        //去支付
-Route::get('/sign1','TestController@sign1');  
+// Route::get('/sign1','TestController@sign1');  
 
+Route::get('/sign1','User\IndexController@sign1');
+// Route::get('/sign2','TestController@sign2');
+Route::get('/sign2','User\IndexController@sign2');
