@@ -142,4 +142,12 @@ class TestController extends Controller
         }
         return $response;
     }
+    public function postamanl(){
+
+        $data = [
+            'user_name' => 'zhangsan',
+            'email'     => 'zhangsan@qq.com',
+            'amount'    => 10000
+        ];
+      }
 }
