@@ -26,7 +26,7 @@ class TestController extends Controller
     	];
     	echo json_encode($response);
     }
-    public function reg(Request $request){
+    public function reg0(Request $request){
     	echo '<pre>';print_r($request->input());echo '</pre>';
     	$pass1=$request->input('pass1');
     	$pass2=$request->input('pass2');
@@ -47,7 +47,7 @@ class TestController extends Controller
 
     }
 
-  	public function login(Request $request){
+  	public function login0(Request $request){
   		$name=$request->input('name');
   		$pass=$request->input('pass');
   		//echo "pass: ".$pass;echo '<br>';
@@ -102,5 +102,44 @@ class TestController extends Controller
         $count = Redis::incr($redis_key);
         echo 'count: '.$count;
     }
-
+    public function reg(){
+      // echo '<pre>';print_r($_POST);echo'</pre>';
+      $url='http://1905passport.com/api/user/reg';
+      $response = UserModel::curlPost($url,$_POST);
+      return $response;
+    }
+     public function login()
+    {
+        //请求passport
+          // echo '<pre>';print_r($_POST);echo'</pre>';
+        $url = 'http://1905passport.com/api/user/login';
+        $response = UserModel::curlPost($url,$_POST);
+        return $response;
+    }
+     public function showData()
+    {
+        // 收到 token
+        $uid = $_SERVER['HTTP_UID'];
+        $token = $_SERVER['HTTP_TOKEN'];
+        // 请求passport鉴权
+        $url = 'http://passport.1905.com/api/auth';         //鉴权接口
+        $response = UserModel::curlPost($url,['uid'=>$uid,'token'=>$token]);
+        $status = json_decode($response,true);
+        //处理鉴权结果
+        if($status['errno']==0)     //鉴权通过
+        {
+            $data = "sdlfkjsldfkjsdlf";
+            $response = [
+                'errno' => 0,
+                'msg'   => 'ok',
+                'data'  => $data
+            ];
+        }else{          //鉴权失败
+            $response = [
+                'errno' => 40003,
+                'msg'   => '授权失败'
+            ];
+        }
+        return $response;
+    }
 }
