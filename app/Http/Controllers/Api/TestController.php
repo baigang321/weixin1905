@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Model\UserModel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Redis;
+use GuzzleHttp\Client;
 class TestController extends Controller
 {
     public function test(){
@@ -150,4 +151,29 @@ class TestController extends Controller
             'amount'    => 10000
         ];
       }
+
+    public function sign2()
+    {
+        $key = "1905";          
+       
+        $order_info = [
+            "order_id"     => 'LN_' . mt_rand(111111,999999),
+            "order_amount" => mt_rand(111,999),
+            "uid"  => 12345,
+            "add_time"=> time(),
+        ];
+        $data_json = json_encode($order_info);
+        $sign = md5($data_json.$key);
+        $client = new Client();
+        $url = 'http://1905passport.com/test/check2';
+        $response = $client->request("POST",$url,[
+            "form_params"   => [
+                "data"  => $data_json,
+                "sign"  => $sign
+            ]
+        ]);
+        //接收服务器端的数据
+        $response_data = $response->getBody();
+        echo $response_data;
+    }
 }

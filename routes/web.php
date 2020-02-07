@@ -14,6 +14,12 @@
 Route::get('/', function () {
    return view('welcome');
 });
+
+Route::get('test/sign2','Api\TestController@sign2');
+
+
+
+
 //Route::get('/','Index\IndexController@index');
 Route::get('/info',function(){
     phpinfo();
