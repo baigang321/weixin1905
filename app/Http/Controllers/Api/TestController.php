@@ -151,6 +151,27 @@ class TestController extends Controller
             'amount'    => 10000
         ];
       }
+    
+    public function md5test()
+    {
+        $data = "Hello world";      //要发送的数据
+        $key = "1905";              //计算签名的key  发送端与接收端拥有相同的key
+
+        //计算签名  MD5($data . $key)
+        //$signature = md5($data . $key);
+        $signature = 'sdlfkjsldfkjsfd';
+
+        echo "待发送的数据：". $data;echo '</br>';
+        echo "签名：". $signature;echo '</br>';
+
+        //发送数据
+        $url = "http://1905passport.com/test/check?data=".$data . '&signature='.$signature;
+        echo $url;echo '<hr>';
+
+        $response = file_get_contents($url);
+        echo $response;
+    }
+
 
     public function sign2()
     {

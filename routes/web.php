@@ -14,6 +14,7 @@
 Route::get('/', function () {
    return view('welcome');
 });
+Route::get('test/md5','Api\TestController@md5test');
 
 Route::get('test/sign2','Api\TestController@sign2');
 
