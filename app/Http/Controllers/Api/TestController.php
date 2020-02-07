@@ -151,7 +151,7 @@ class TestController extends Controller
             'amount'    => 10000
         ];
       }
-    
+
     public function md5test()
     {
         $data = "Hello world";      //要发送的数据
@@ -196,5 +196,20 @@ class TestController extends Controller
         //接收服务器端的数据
         $response_data = $response->getBody();
         echo $response_data;
+    }
+    //私钥签名
+    public function sign3(){
+        $data="Hello World"; //待发送的数据
+        //计算签名
+        $path=storage_path('keys/privkey3');
+        $pkeyid=openssl_pkey_get_private("file://".$path);
+        //计算签名 得到sig
+        openssl_sign($data,$signature,$pkeyid);
+        openssl_free_key($pkeyid);
+        //var_dump($signature);
+
+        //base64编码 方便输出
+        $sign_str=base64_encode($signature);
+        echo "base64encode 后面 签名: ". $sign_str;
     }
 }
