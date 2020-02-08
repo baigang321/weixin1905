@@ -17,7 +17,8 @@ Route::get('/', function () {
 Route::get('test/md5','Api\TestController@md5test');
 Route::get('test/sign2','Api\TestController@sign2');
 Route::get('test/sign3','Api\TestController@sign3');//私钥签名
-
+Route::get('test/encrypt1','Api\TestController@encrypt1');
+Route::get('test/encrypt2','Api\TestController@encrypt2');
 //Route::get('/','Index\IndexController@index');
 Route::get('/info',function(){
     phpinfo();

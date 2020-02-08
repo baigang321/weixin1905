@@ -212,4 +212,25 @@ class TestController extends Controller
         $sign_str=base64_encode($signature);
         echo "base64encode 后面 签名: ". $sign_str;
     }
+public function encrypt1(){
+    $key = "helloworld";
+    $data['iv'] = 'fdakieli;njajdj1';
+    $data['value'] = openssl_encrypt($key, 'AES-256-CBC', $key, 0, $data['iv']);
+    $encrypt = base64_encode(json_encode($data));
+    return $encrypt;
+}
+public function encrypt2()
+{
+$key = 'helloworld';//解密钥匙
+$encrypt = json_decode(base64_decode('eyJpdiI6ImZkYWtpZWxpO25qYWpkajEiLCJ2YWx1ZSI6IjVKUnRrTXlhOEQyVW0wblZ5U1ZWUXc9PSJ9'), true);
+#$iv = base64_decode($encrypt['iv']);
+$iv = ($encrypt['iv']);
+$id = openssl_decrypt($encrypt['value'], 'AES-256-CBC', $key, 0, $iv);
+if ($id) {
+return $id;
+} else {
+return 0;
+}
+}
+
 }
