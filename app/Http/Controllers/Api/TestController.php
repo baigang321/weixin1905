@@ -232,5 +232,16 @@ return $id;
 return 0;
 }
 }
-
+//非对称加密
+public function encrypt3(){
+  $data="这是一个秘密";
+  //使用非对称加密使用私钥加密
+  $path=storage_path('keys/privkey3');
+  $prive_key=openssl_pkey_get_private("file://".$path);
+  openssl_private_encrypt($data, $encrypt_data,$prive_key,OPENSSL_PKCS1_PADDING);
+  var_dump($encrypt_data);
+  $base64_str=base64_encode($encrypt_data);
+  echo '</br>';
+  echo $base64_str;
+}
 }
